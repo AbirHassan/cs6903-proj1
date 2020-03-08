@@ -12,15 +12,16 @@ for line in range(len(lst)):
 
 t = random.randint(1, 24)
 k = [random.randint(0,26) for i in range(t)]
-m = dict1[2]
+m = dict1[4]
 print("message is: ", m)
 
 
 #list of letters in the message space
 alphabet = [' '] + [chr(i + ord('a')) for i in range(26)]
-inv_alphabet = {}
+#mapping of each letter to its number
+alphabet_map = {}
 for i in range(len(alphabet)):
-    inv_alphabet[alphabet[i]] = i
+    alphabet_map[alphabet[i]] = i
 
 def create_ciphertext(m):
     test_cipher = ""
@@ -37,20 +38,31 @@ def create_ciphertext(m):
 
 test_cipher1 = create_ciphertext(m)
 
+def get_distribution(cipher):
+    dist = [0 for i in range(len(alphabet))]
+    for c in cipher:
+        dist[alphabet_map[c]] += 1
+    return dist
+
 def invert_cipher1_helper(poss_plaintext, c):
     success = 0
+    #Gonna brute force the length of the key
     for t in range(1, 24):
         correct = 0
-        for j in range(0, t):
+        for k_i in range(0, t): #each letter in the key
             c_str = ""
             #step of t bc that's when the key repeats
-            for i in range(j, len(c), t):
+            for i in range(k_i, len(c), t):
                 c_str += c[i]
             poss_plaintext1 = ""
-            for i in range(j, len(poss_plaintext), t):
+            for i in range(k_i, len(poss_plaintext), t):
+                #get the t_th letters from the possible plaintext to compare distributions
                 poss_plaintext1 += poss_plaintext[i]
-            if poss_plaintext == poss_plaintext1:
-                correct +=1
+
+            #Get distributions of letters
+            if sorted(get_distribution(c_str)) == sorted(get_distribution(poss_plaintext1)):
+                correct +=1 
+
         success = max(success, correct)
     return success
 
