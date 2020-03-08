@@ -1,19 +1,4 @@
 import random
-cipher = input("Enter the ciphertext: ")
-
-with open("plaintext_dictionary_test1.txt") as test1:
-    lst = test1.readlines()[4::4]
-
-dict1 = {}
-for line in range(len(lst)):
-    dict1[line] =  lst[line].strip()
-
-# print(dict1)
-
-t = random.randint(1, 24)
-k = [random.randint(0,26) for i in range(t)]
-m = dict1[4]
-print("message is: ", m)
 
 
 #list of letters in the message space
@@ -23,7 +8,27 @@ alphabet_map = {}
 for i in range(len(alphabet)):
     alphabet_map[alphabet[i]] = i
 
-def create_ciphertext(m):
+
+def main():
+    cipher = input("Enter the ciphertext: ")
+
+    with open("plaintext_dictionary_test1.txt") as test1:
+        lst = test1.readlines()[4::4]
+
+    dict1 = {}
+    for line in range(len(lst)):
+        dict1[line] =  lst[line].strip()
+
+    t = random.randint(1, 24)
+    k = [random.randint(0,26) for i in range(t)]
+    m = dict1[4]
+    print("message is: ", m)
+
+    test_cipher1 = create_ciphertext(m, k, t)
+
+    print(invert_cipher1(test_cipher1, dict1))
+
+def create_ciphertext(m, k, t):
     test_cipher = ""
 
     for i in range(len(m)):
@@ -36,7 +41,7 @@ def create_ciphertext(m):
     print(test_cipher)
     return test_cipher
 
-test_cipher1 = create_ciphertext(m)
+
 
 def get_distribution(cipher):
     dist = [0 for i in range(len(alphabet))]
@@ -61,12 +66,12 @@ def invert_cipher1_helper(poss_plaintext, c):
 
             #Get distributions of letters
             if sorted(get_distribution(c_str)) == sorted(get_distribution(poss_plaintext1)):
-                correct +=1 
+                correct +=1
 
         success = max(success, correct)
     return success
 
-def invert_cipher1(c):
+def invert_cipher1(c, dict1):
     success = invert_cipher1_helper(dict1[0], c)
     succ_ind = 0
     for i in range(len(list(dict1.values()))):
@@ -77,4 +82,4 @@ def invert_cipher1(c):
             success = curr
     return dict1[succ_ind]
 
-print(invert_cipher1(test_cipher1))
+main()
