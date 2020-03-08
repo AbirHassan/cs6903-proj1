@@ -1,0 +1,1 @@
+cipher = input("Enter the ciphertext: ")
