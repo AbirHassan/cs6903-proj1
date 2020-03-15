@@ -21,8 +21,6 @@ def create_ciphertext(m, k, t):
     # print(test_cipher)
     return test_cipher
 
-
-
 def get_distribution(cipher):
     dist = [0 for i in range(len(alphabet))]
     for c in cipher:
@@ -61,9 +59,6 @@ def invert_cipher1(c, dict1):
             success = curr
     return dict1[succ_ind]
 
-def create_ciphertext2(m, k, t):
-    pass
-
 def main():
     with open("plaintext_dictionary_test1.txt") as test1:
         lst = test1.readlines()[4::4]
@@ -78,7 +73,8 @@ def main():
     print("### Testing ###")
     print("message is: ", m)
     test_cipher1 = create_ciphertext(m, k, t)
-    print("cipher is: ", test_cipher1)
+    print("cipher is: ")
+    print(test_cipher1 + ":")
     print("### End Testing ###\n")
 
     cipher = input("Enter the ciphertext: ")
@@ -98,7 +94,7 @@ def main():
     print(task2_plaintext, len(task2_plaintext))
 
     t2 = random.randint(1, 24)
-    k2 = [random.randint(0,26) for i in range(t)]
+    k2 = [random.randint(0,26) for i in range(t2)]
     c2 = create_ciphertext(task2_plaintext, k2, t2)
     print("cipher for task 2: ", c2)
 
