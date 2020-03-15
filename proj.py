@@ -8,26 +8,6 @@ alphabet_map = {}
 for i in range(len(alphabet)):
     alphabet_map[alphabet[i]] = i
 
-
-def main():
-    cipher = input("Enter the ciphertext: ")
-
-    with open("plaintext_dictionary_test1.txt") as test1:
-        lst = test1.readlines()[4::4]
-
-    dict1 = {}
-    for line in range(len(lst)):
-        dict1[line] =  lst[line].strip()
-
-    t = random.randint(1, 24)
-    k = [random.randint(0,26) for i in range(t)]
-    m = dict1[4]
-    print("message is: ", m)
-
-    test_cipher1 = create_ciphertext(m, k, t)
-
-    print(invert_cipher1(test_cipher1, dict1))
-
 def create_ciphertext(m, k, t):
     test_cipher = ""
 
@@ -37,8 +17,8 @@ def create_ciphertext(m, k, t):
             alpha = 0
         test_cipher += alphabet[(alpha + k[(1 + i) % t]) % 27 ]
 
-    print(k, len(k))
-    print(test_cipher)
+    # print(k, len(k))
+    # print(test_cipher)
     return test_cipher
 
 
@@ -76,10 +56,52 @@ def invert_cipher1(c, dict1):
     succ_ind = 0
     for i in range(len(list(dict1.values()))):
         curr = invert_cipher1_helper(dict1[i], c)
-        print(curr)
         if curr > success:
             succ_ind = i
             success = curr
     return dict1[succ_ind]
+
+def create_ciphertext2(m, k, t):
+    pass
+
+def main():
+    with open("plaintext_dictionary_test1.txt") as test1:
+        lst = test1.readlines()[4::4]
+
+    dict1 = {}
+    for line in range(len(lst)):
+        dict1[line] =  lst[line].strip()
+
+    t = random.randint(1, 24)
+    k = [random.randint(0,26) for i in range(t)]
+    m = dict1[4]
+    print("### Testing ###")
+    print("message is: ", m)
+    test_cipher1 = create_ciphertext(m, k, t)
+    print("cipher is: ", test_cipher1)
+    print("### End Testing ###\n")
+
+    cipher = input("Enter the ciphertext: ")
+
+    print("Original plaintext is: ", invert_cipher1(cipher, dict1))
+
+    print("\ntask 2 plaintext")
+    with open("word_dictionary_test2.txt") as test2:
+        dictionary_2 = [line.strip() for line in test2.readlines()]
+        task2_plaintext = ""
+        while len(task2_plaintext) <= 500:
+            new_word = random.choice(dictionary_2)
+            if len(new_word) + len(task2_plaintext) >= 500:
+                break
+            else:
+                task2_plaintext += new_word + ' '
+    print(task2_plaintext, len(task2_plaintext))
+
+    t2 = random.randint(1, 24)
+    k2 = [random.randint(0,26) for i in range(t)]
+    c2 = create_ciphertext(task2_plaintext, k2, t2)
+    print("cipher for task 2: ", c2)
+
+
 
 main()
