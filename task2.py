@@ -53,36 +53,36 @@ def find_key_length(cipher):
     return key_len
 
 #These are for brute forcing the key once you know the key length
-def monoalphabetic(m, k):
+def monoalpha(m, k):
     cipher = ""
     for c in m:
         cipher += alphabet[(alphabet_map[c] + k) % 27]
     return cipher
 
-def chi_square(c, e):
-    return sum([((c[i] - e[i])**2)/e[i] for i in range(len(c))])
+def chi_square(cipher, e):
+    return sum([((cipher[i] - e[i])**2)/e[i] for i in range(len(cipher))])
 
-def interpret(c, k):
-    cist = list(c)
-    for i in range(len(c)):
-        cist[i] = alphabet[(alphabet_map[c[i]] + k[i % len(k)]) % 27]
-    return "".join(cist)
+#This will attempt to invert the ciphertext based on the guessed key
+def attempt_invert_cipher2(cipher, k):
+    cipher_lst = list(cipher)
+    for i in range(len(cipher)):
+        cipher_lst[i] = alphabet[(alphabet_map[cipher[i]] + k[i % len(k)]) % 27]
+    return "".join(cipher_lst)
 
-def break_down(c, t, eng_let_freq):
-    each = subkey(c, t)
+#This will attempt to guess the values of the key once the key length is known
+def break_down(cipher, t, eng_let_freq):
+    attempt = subkey(cipher, t)
     key = []
-    for i in range(len(each)):
-        mmin = 10000000
-        min_idx = 0
+    for i in range(len(attempt)):
+        min_i = 0
+        shift_min = 10000000
         for j in range(26):
-            shifted = monoalphabetic(each[i], j)
-            me = chi_square(get_distribution(shifted), eng_let_freq)
-            # print(me)
-            if me < mmin:
-                mmin = me
-                min_idx = j
-        
-        key.append(min_idx)
+            shift = monoalpha(attempt[i], j)
+            curr = chi_square(get_distribution(shift), eng_let_freq)
+            if curr < shift_min:
+                shift_min = curr
+                min_i = j
+        key.append(min_i)
     return key
 
 def main():
@@ -103,9 +103,10 @@ def main():
     t2 = random.randint(1, 24)
     k2 = [random.randint(0,26) for i in range(t2)]
     print("cipher for task 2: ", create_ciphertext(task2_plaintext, k2, t2))
+    
     c2 = input("Enter ciphertext for task 2: ")
-    print("key len: ", k2, len(k2))
-    print("key len guess: ", find_key_length(c2))
+    # print("key len: ", k2, len(k2))
+    # print("key len guess: ", find_key_length(c2))
 
     #Taken from: http://www.macfreek.nl/memory/Letter_Distribution
     eng_let_freq_dict = {   ' ': 0.1831686, 'a': 0.0655307, 'b': 0.0127070, 'c': 0.0226508, 'd': 0.0335227, 'e': 0.1021788,
@@ -121,7 +122,7 @@ def main():
                 ]
 
     test = break_down(c2, find_key_length(c2), list(eng_let_freq_dict.values()))
-    p2 = interpret(c2, test)
+    p2 = attempt_invert_cipher2(c2, test)
     print("The original plaintext is most likely: ")
     print(p2)
 
